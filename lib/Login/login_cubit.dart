@@ -1,3 +1,6 @@
+import 'dart:ffi';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_app/Login/login_states.dart';
@@ -16,5 +19,22 @@ class LoginCubit extends Cubit<LoginStates> {
       suffixIcon = Icons.visibility_off;
     }
     emit(LoginChangeEyeState());
+  }
+
+  void userLogin({
+    required String email,
+    required String password,
+  }) {
+    emit(UserLoginLoadingState());
+    FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: email, password: password)
+        .then((value) {
+      print(value.user?.email);
+      print(value.user?.uid);
+      emit(UserLoginSuccessState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(UserLoginErrorState());
+    });
   }
 }

@@ -23,6 +23,10 @@ class RegisterScreen extends StatelessWidget {
           var cubit = RegisterCubit.get(context);
           return Scaffold(
             backgroundColor: Colors.white,
+            appBar: AppBar(
+              backgroundColor: Colors.white,
+              surfaceTintColor: Colors.white,
+            ),
             body: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -146,11 +150,9 @@ class RegisterScreen extends StatelessWidget {
                             child: ElevatedButton(
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => LoginScreen(),
-                                    ),
+                                  cubit.userRegister(
+                                    email: emailController.text,
+                                    password: passwordController.text,
                                   );
                                 }
                               },
@@ -158,46 +160,19 @@ class RegisterScreen extends StatelessWidget {
                                 backgroundColor:
                                     WidgetStatePropertyAll(Colors.black),
                               ),
-                              child: const Text(
-                                'Sign Up',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 25,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                'or',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => LoginScreen(),
+                              child: state is! UserRegisterLoadingState
+                                  ? const Text(
+                                      'Sign Up',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 25,
+                                        color: Colors.white,
                                       ),
-                                    );
-                                  },
-                                  child: Text(
-                                    'Login',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.grey[600],
+                                    )
+                                  : const CircularProgressIndicator(
+                                      color: Colors.white,
                                     ),
-                                  ))
-                            ],
+                            ),
                           ),
                         ),
                       ],

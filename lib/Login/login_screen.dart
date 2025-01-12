@@ -107,20 +107,29 @@ class LoginScreen extends StatelessWidget {
                             height: 60,
                             child: ElevatedButton(
                               onPressed: () {
-                                if (_formKey.currentState!.validate()) {}
+                                if (_formKey.currentState!.validate()) {
+                                  cubit.userLogin(
+                                    email: emailController.text,
+                                    password: passwordController.text,
+                                  );
+                                }
                               },
                               style: const ButtonStyle(
                                 backgroundColor:
                                     WidgetStatePropertyAll(Colors.black),
                               ),
-                              child: const Text(
-                                'Login',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 25,
-                                  color: Colors.white,
-                                ),
-                              ),
+                              child: state is! UserLoginLoadingState
+                                  ? const Text(
+                                      'Login',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 25,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : const CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ),
                             ),
                           ),
                         ),
