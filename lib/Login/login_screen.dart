@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_app/Components/components.dart';
+import 'package:social_app/Home%20Layout/home_layout.dart';
 import 'package:social_app/Login/login_cubit.dart';
 import 'package:social_app/Login/login_states.dart';
 import 'package:social_app/Register/register_screen.dart';
@@ -17,7 +18,17 @@ class LoginScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => LoginCubit(),
       child: BlocConsumer<LoginCubit, LoginStates>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is UserLoginSuccessState) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeLayout(),
+              ),
+              (route) => false,
+            );
+          }
+        },
         builder: (context, state) {
           var cubit = LoginCubit.get(context);
           return Scaffold(

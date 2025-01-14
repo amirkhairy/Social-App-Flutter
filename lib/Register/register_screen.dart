@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_app/Components/components.dart';
+import 'package:social_app/Home%20Layout/home_layout.dart';
 import 'package:social_app/Login/login_screen.dart';
 import 'package:social_app/Register/register_cubit.dart';
 import 'package:social_app/Register/register_states.dart';
@@ -10,6 +11,8 @@ class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   var emailController = TextEditingController();
+  var userNameController = TextEditingController();
+  var phoneNumberController = TextEditingController();
   var passwordController = TextEditingController();
   var confirmPasswordController = TextEditingController();
 
@@ -18,7 +21,17 @@ class RegisterScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => RegisterCubit(),
       child: BlocConsumer<RegisterCubit, RegisterStates>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is CreateUserSuccessState) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeLayout(),
+              ),
+              (route) => false,
+            );
+          }
+        },
         builder: (context, state) {
           var cubit = RegisterCubit.get(context);
           return Scaffold(
@@ -63,6 +76,62 @@ class RegisterScreen extends StatelessWidget {
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your email';
+                            }
+                            return null;
+                          },
+                          onFieldSubmitted: (value) {},
+                          thereSuffixIcon: false,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Text(
+                          'User Name',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        CustomTextFormField(
+                          controller: userNameController,
+                          hintText: 'Amir Khairy',
+                          prefixIcon: Icons.person,
+                          keyboardType: TextInputType.name,
+                          obscureText: false,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your user name';
+                            }
+                            return null;
+                          },
+                          onFieldSubmitted: (value) {},
+                          thereSuffixIcon: false,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Text(
+                          'Phone Number',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        CustomTextFormField(
+                          controller: phoneNumberController,
+                          hintText: '01032078026',
+                          prefixIcon: Icons.phone,
+                          keyboardType: TextInputType.phone,
+                          obscureText: false,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your phone number';
                             }
                             return null;
                           },
@@ -153,6 +222,8 @@ class RegisterScreen extends StatelessWidget {
                                   cubit.userRegister(
                                     email: emailController.text,
                                     password: passwordController.text,
+                                    userName: userNameController.text,
+                                    phoneNumber: phoneNumberController.text,
                                   );
                                 }
                               },

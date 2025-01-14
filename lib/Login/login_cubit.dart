@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_app/Components/cache_helper.dart';
 import 'package:social_app/Login/login_states.dart';
 
 class LoginCubit extends Cubit<LoginStates> {
@@ -31,6 +32,10 @@ class LoginCubit extends Cubit<LoginStates> {
         .then((value) {
       print(value.user?.email);
       print(value.user?.uid);
+      CacheHelper.setData(
+        key: 'uId',
+        value: value.user?.uid,
+      );
       emit(UserLoginSuccessState());
     }).catchError((error) {
       print(error.toString());
