@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: openScreen,
+        home: HomeLayout(),
       ),
     );
   }

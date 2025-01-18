@@ -2,6 +2,10 @@ abstract class HomeStates {}
 
 class HomeInitialState extends HomeStates {}
 
+class AddPostState extends HomeStates {}
+
+class ChangeNavBarState extends HomeStates {}
+
 class GetUserDataLoadingState extends HomeStates {}
 
 class GetUserDataSuccessState extends HomeStates {}
