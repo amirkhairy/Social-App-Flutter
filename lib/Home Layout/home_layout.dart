@@ -28,8 +28,8 @@ class HomeLayout extends StatelessWidget {
             backgroundColor: Colors.white,
             title: Text(
               cubit.titles[cubit.currentIndex],
-              style:
-                  const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                  color: Colors.black, fontWeight: FontWeight.bold),
             ),
             actions: [
               IconButton(
@@ -92,7 +92,7 @@ class HomeLayout extends StatelessWidget {
             ],
           ),
           body: ConditionalBuilder(
-            condition: HomeCubit.get(context).model != null,
+            condition: HomeCubit.get(context).userModel != null,
             builder: (context) {
               return cubit.screens[cubit.currentIndex];
             },

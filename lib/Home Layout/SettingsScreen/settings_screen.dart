@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_app/Home%20Layout/SettingsScreen/Edit%20Profile/edit_profile_screen.dart';
 import 'package:social_app/Home%20Layout/home_cubit.dart';
 import 'package:social_app/Home%20Layout/home_states.dart';
 
@@ -12,7 +13,7 @@ class SettingsScreen extends StatelessWidget {
     return BlocConsumer<HomeCubit, HomeStates>(
       listener: (context, state) {},
       builder: (context, state) {
-        var userModel = HomeCubit.get(context).model;
+        var userModel = HomeCubit.get(context).userModel;
 
         return Padding(
           padding: const EdgeInsets.all(8.0),
@@ -231,7 +232,13 @@ class SettingsScreen extends StatelessWidget {
                         Colors.blue,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditProfileScreen(),
+                          ));
+                    },
                     child: Icon(
                       Icons.edit,
                       size: 18,

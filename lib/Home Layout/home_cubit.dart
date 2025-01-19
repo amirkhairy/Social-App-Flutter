@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:social_app/Components/cache_helper.dart';
 import 'package:social_app/Home%20Layout/ChatScreen/chat_screen.dart';
 import 'package:social_app/Home%20Layout/HomeScreen/home_screen.dart';
@@ -39,7 +42,7 @@ class HomeCubit extends Cubit<HomeStates> {
     }
   }
 
-  UserModel? model;
+  UserModel? userModel;
   void getUserData() {
     emit(GetUserDataLoadingState());
     FirebaseFirestore.instance
@@ -48,11 +51,40 @@ class HomeCubit extends Cubit<HomeStates> {
         .get()
         .then((value) {
       print(value.data());
-      model = UserModel.fromJson(value.data() ?? {});
+      userModel = UserModel.fromJson(value.data() ?? {});
       emit(GetUserDataSuccessState());
     }).catchError((error) {
       print(error.toString());
       emit(GetUserDataErrorState(error));
     });
+  }
+
+   File? profileImage;
+  var picker = ImagePicker();
+  Future<void> pickProfileImage() async {
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.camera,
+    );
+    if (pickedFile != null) {
+      profileImage = File(pickedFile.path);
+      emit(ProfileImagePickedSuccessState());
+    } else {
+      print('No image selected.');
+      emit(ProfileImagePickedErrorState());
+    }
+  }
+
+   File? coverImage;
+  Future<void> pickCoverImage() async {
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.camera,
+    );
+    if (pickedFile != null) {
+      coverImage = File(pickedFile.path);
+      emit(CoverImagePickedSuccessState());
+    } else {
+      print('No image selected.');
+      emit(CoverImagePickedErrorState());
+    }
   }
 }
