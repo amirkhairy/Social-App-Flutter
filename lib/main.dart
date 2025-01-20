@@ -9,11 +9,15 @@ import 'package:social_app/Home%20Layout/home_states.dart';
 import 'package:social_app/Login/login_screen.dart';
 import 'package:social_app/constants.dart';
 import 'package:social_app/firebase_options.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+
+  await Supabase.initialize(
+    url: 'https://pkonvdhklozpmebzdgkm.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrb252ZGhrbG96cG1lYnpkZ2ttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzczNTkzNDMsImV4cCI6MjA1MjkzNTM0M30.J87ScXj6JQmup7EGuDsje8V6GugNB-nMr9-UZp93DMM',
   );
   Bloc.observer = MyBlocObserver();
   await CacheHelper.init();
@@ -47,7 +51,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: HomeLayout(),
+        home: LoginScreen(),
       ),
     );
   }

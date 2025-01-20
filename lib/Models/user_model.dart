@@ -19,7 +19,7 @@ class UserModel {
     email = json['email'];
     name = json['name'];
     phone = json['phone'];
-    uId = json['uId'];
+    uId = json['id_'];
     cover = json['cover'];
     image = json['image'];
     bio = json['bio'];
@@ -32,7 +32,7 @@ class UserModel {
       'cover': cover,
       'image': image,
       'bio': bio,
-      'uId': uId,
+      'id_': uId,
     };
   }
 }

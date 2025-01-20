@@ -19,6 +19,7 @@ class GetUserDataSuccessState extends HomeStates {}
 class ProfileImagePickedSuccessState extends HomeStates {}
 
 class ProfileImagePickedErrorState extends HomeStates {}
+
 class CoverImagePickedSuccessState extends HomeStates {}
 
 class CoverImagePickedErrorState extends HomeStates {}
