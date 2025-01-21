@@ -13,47 +13,28 @@ class EditProfileScreen extends StatelessWidget {
     var phoneController = TextEditingController();
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        titleSpacing: 5.0,
-        title: Text(
-          'Edit Profile',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              if (formKey.currentState!.validate()) {}
-            },
-            child: Text(
-              'Update',
+    return BlocConsumer<HomeCubit, HomeStates>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        var userModel = HomeCubit.get(context).userModel;
+        var profileImage = HomeCubit.get(context).profileImage;
+        var coverImage = HomeCubit.get(context).coverImage;
+        nameController.text = userModel!.name!;
+        bioController.text = userModel.bio!;
+        phoneController.text = userModel.phone!;
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            titleSpacing: 5.0,
+            title: const Text(
+              'Edit Profile',
               style: TextStyle(
-                fontSize: 18,
-                color: Colors.blue,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          SizedBox(
-            width: 5,
-          ),
-        ],
-      ),
-      body: BlocConsumer<HomeCubit, HomeStates>(
-        listener: (context, state) {},
-        builder: (context, state) {
-          var userModel = HomeCubit.get(context).userModel;
-          var profileImage = HomeCubit.get(context).profileImage;
-          var coverImage = HomeCubit.get(context).coverImage;
-          nameController.text = userModel!.name!;
-          bioController.text = userModel.bio!;
-          phoneController.text = userModel.phone!;
-
-          return SingleChildScrollView(
+          body: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Form(
@@ -72,7 +53,7 @@ class EditProfileScreen extends StatelessWidget {
                                 height: 160,
                                 width: double.infinity,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(
+                                  borderRadius: const BorderRadius.only(
                                     topLeft: Radius.circular(4),
                                     topRight: Radius.circular(4),
                                   ),
@@ -94,10 +75,9 @@ class EditProfileScreen extends StatelessWidget {
                                   foregroundColor: Colors.white,
                                   child: IconButton(
                                     onPressed: () {
-                                      HomeCubit.get(context)
-                                            .pickCoverImage();
+                                      HomeCubit.get(context).pickCoverImage();
                                     },
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.add_a_photo,
                                       size: 20,
                                     ),
@@ -135,7 +115,7 @@ class EditProfileScreen extends StatelessWidget {
                                         HomeCubit.get(context)
                                             .pickProfileImage();
                                       },
-                                      icon: Icon(
+                                      icon: const Icon(
                                         Icons.add_a_photo,
                                         size: 20,
                                       ),
@@ -148,12 +128,84 @@ class EditProfileScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(
+                    if (state is ProfileImagePickedSuccessState ||
+                        state is CoverImagePickedSuccessState)
+                      const SizedBox(
+                        height: 20,
+                      ),
+                    Row(
+                      children: [
+                        if (state is ProfileImagePickedSuccessState)
+                          Expanded(
+                            child: OutlinedButton(
+                              style: ButtonStyle(
+                                overlayColor: WidgetStatePropertyAll(
+                                  Colors.grey[300],
+                                ),
+                                side: WidgetStateProperty.all(
+                                  BorderSide(
+                                    color: Colors.grey[300]!,
+                                  ),
+                                ),
+                                foregroundColor: const WidgetStatePropertyAll(
+                                  Colors.blue,
+                                ),
+                                shape: WidgetStatePropertyAll(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(0),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                HomeCubit.get(context).updateProfileImage(
+                                  uId: userModel.uId!,
+                                  profileImage: profileImage,
+                                );
+                              },
+                              child: const Text('Update Profile Image'),
+                            ),
+                          ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        if (state is CoverImagePickedSuccessState)
+                          Expanded(
+                            child: OutlinedButton(
+                              style: ButtonStyle(
+                                overlayColor: WidgetStatePropertyAll(
+                                  Colors.grey[300],
+                                ),
+                                side: WidgetStateProperty.all(
+                                  BorderSide(
+                                    color: Colors.grey[300]!,
+                                  ),
+                                ),
+                                foregroundColor: const WidgetStatePropertyAll(
+                                  Colors.blue,
+                                ),
+                                shape: WidgetStatePropertyAll(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(0),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                HomeCubit.get(context).updateCoverImage(
+                                  uId: userModel.uId!,
+                                  coverImage: coverImage,
+                                );
+                              },
+                              child: const Text('Update Cover Image'),
+                            ),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(
                       height: 20,
                     ),
                     TextFormField(
                       controller: nameController,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.w700,
                       ),
                       decoration: InputDecoration(
@@ -162,12 +214,12 @@ class EditProfileScreen extends StatelessWidget {
                           color: Colors.grey[600],
                         ),
                         labelText: 'Name',
-                        focusedBorder: OutlineInputBorder(
+                        focusedBorder: const OutlineInputBorder(
                           borderSide: BorderSide(
                             color: Colors.blue,
                           ),
                         ),
-                        prefixIcon: Icon(
+                        prefixIcon: const Icon(
                           Icons.person_2_outlined,
                         ),
                         border: OutlineInputBorder(
@@ -181,12 +233,12 @@ class EditProfileScreen extends StatelessWidget {
                         return null;
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     TextFormField(
                       controller: bioController,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.w700,
                       ),
                       decoration: InputDecoration(
@@ -195,12 +247,12 @@ class EditProfileScreen extends StatelessWidget {
                           color: Colors.grey[600],
                         ),
                         labelText: 'Bio',
-                        focusedBorder: OutlineInputBorder(
+                        focusedBorder: const OutlineInputBorder(
                           borderSide: BorderSide(
                             color: Colors.blue,
                           ),
                         ),
-                        prefixIcon: Icon(
+                        prefixIcon: const Icon(
                           Icons.info_outline,
                         ),
                         border: OutlineInputBorder(
@@ -214,12 +266,12 @@ class EditProfileScreen extends StatelessWidget {
                         return null;
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     TextFormField(
                       controller: phoneController,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.w700,
                       ),
                       decoration: InputDecoration(
@@ -228,12 +280,12 @@ class EditProfileScreen extends StatelessWidget {
                           color: Colors.grey[600],
                         ),
                         labelText: 'Phone Number',
-                        focusedBorder: OutlineInputBorder(
+                        focusedBorder: const OutlineInputBorder(
                           borderSide: BorderSide(
                             color: Colors.blue,
                           ),
                         ),
-                        prefixIcon: Icon(
+                        prefixIcon: const Icon(
                           Icons.call_outlined,
                         ),
                         border: OutlineInputBorder(
@@ -247,13 +299,51 @@ class EditProfileScreen extends StatelessWidget {
                         return null;
                       },
                     ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            style: ButtonStyle(
+                              overlayColor: WidgetStatePropertyAll(
+                                Colors.grey[300],
+                              ),
+                              side: WidgetStateProperty.all(
+                                BorderSide(
+                                  color: Colors.grey[300]!,
+                                ),
+                              ),
+                              foregroundColor: const WidgetStatePropertyAll(
+                                Colors.blue,
+                              ),
+                              shape: WidgetStatePropertyAll(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(0),
+                                ),
+                              ),
+                            ),
+                            onPressed: () {
+                              HomeCubit.get(context).updateUserData(
+                                uId: userModel.uId!,
+                                name: nameController.text,
+                                phone: phoneController.text,
+                                bio: bioController.text,
+                              );
+                            },
+                            child: const Text('Update User Informations'),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
