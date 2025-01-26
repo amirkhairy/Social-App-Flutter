@@ -11,6 +11,7 @@ import 'package:social_app/Home%20Layout/PostScreen/add_post_screen.dart';
 import 'package:social_app/Home%20Layout/SettingsScreen/settings_screen.dart';
 import 'package:social_app/Home%20Layout/UsersScreen/users_screen.dart';
 import 'package:social_app/Home%20Layout/home_states.dart';
+import 'package:social_app/Models/post_model.dart';
 import 'package:social_app/Models/user_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -36,7 +37,7 @@ class HomeCubit extends Cubit<HomeStates> {
   int currentIndex = 0;
   void changeNavBar(index) {
     if (index == 2) {
-      emit(AddPostState());
+      emit(AddPostIndexState());
     } else {
       currentIndex = index;
       emit(ChangeNavBarState());
@@ -97,6 +98,7 @@ class HomeCubit extends Cubit<HomeStates> {
   File? profileImage;
   var picker = ImagePicker();
   Future<void> pickProfileImage() async {
+    emit(ProfileImagePickedLoadingState());
     final pickedFile = await picker.pickImage(
       source: ImageSource.gallery,
     );
@@ -112,6 +114,7 @@ class HomeCubit extends Cubit<HomeStates> {
 
   File? coverImage;
   Future<void> pickCoverImage() async {
+    emit(CoverImagePickedLoadingState());
     final pickedFile = await picker.pickImage(
       source: ImageSource.gallery,
     );
@@ -123,6 +126,27 @@ class HomeCubit extends Cubit<HomeStates> {
       print('No image selected.');
       emit(CoverImagePickedErrorState());
     }
+  }
+
+  File? postImage;
+  Future<void> pickpostImage() async {
+    emit(PostImagePickedLoadingState());
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+    );
+    if (pickedFile != null) {
+      postImage = File(pickedFile.path);
+      print(postImage);
+      emit(PostImagePickedSuccessState());
+    } else {
+      print('No image selected.');
+      emit(PostImagePickedErrorState());
+    }
+  }
+
+  void removePostImage() {
+    postImage = null;
+    emit(PostImageRemovedState()); // Emit a new state to notify the UI
   }
 
   Future<String?> updateProfileImage({
@@ -333,6 +357,65 @@ class HomeCubit extends Cubit<HomeStates> {
       print('Catch Error: $e');
       emit(UpdateProfileDataErrorState());
       getUserData();
+    }
+  }
+
+  PostModel? postModel;
+  Future<PostModel?> addPost({
+    required UserModel user, // Pass the UserModel directly
+    String? date,
+    required String text,
+  }) async {
+    try {
+      emit(AddPostLoadingState());
+      final supabase = Supabase.instance.client;
+
+      String? postImageUrl;
+
+      // If there's an image to upload
+      if (postImage != null) {
+        final fileName =
+            '${user.uId}/post-${DateTime.now().millisecondsSinceEpoch}.jpg';
+        final uploadResponse = await supabase.storage
+            .from('post-images') // Your storage bucket name
+            .upload(fileName, postImage!);
+
+        if (uploadResponse is String) {
+          postImageUrl =
+              supabase.storage.from('post-images').getPublicUrl(fileName);
+          print("Post image uploaded successfully: $postImageUrl");
+        } else {
+          throw Exception("Error uploading post image");
+        }
+      }
+
+      // Insert post data into the database
+      final response = await supabase.from('posts').insert({
+        'uId': user.uId,
+        'profileName': user.name,
+        'profileImage': user.image,
+        'date': date ??
+            DateTime.now()
+                .toIso8601String(), // Use current date if not provided
+        'text': text,
+        'postImage':
+            postImageUrl ?? '', // Use the uploaded image URL or leave empty
+      }).select();
+
+      // Convert the response to a Post model
+      if (response != null && response.isNotEmpty) {
+        final post =
+            PostModel.fromJson(response.first); // Assuming `Post` model exists
+        print("Post added successfully: ${post.toMap()}");
+        emit(AddPostSuccessState());
+        return post; // Return the created Post object
+      } else {
+        throw Exception("Failed to add post");
+      }
+    } catch (error) {
+      print("Error adding post: $error");
+      emit(AddPostErrorState());
+      return null;
     }
   }
 }

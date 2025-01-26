@@ -12,11 +12,11 @@ class HomeLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<HomeCubit, HomeStates>(
       listener: (context, state) {
-        if (state is AddPostState) {
+        if (state is AddPostIndexState) {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const AddPostScreen(),
+                builder: (context) =>  AddPostScreen(),
               ));
         }
       },

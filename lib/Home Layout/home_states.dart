@@ -2,7 +2,7 @@ abstract class HomeStates {}
 
 class HomeInitialState extends HomeStates {}
 
-class AddPostState extends HomeStates {}
+class AddPostIndexState extends HomeStates {}
 
 class ChangeNavBarState extends HomeStates {}
 
@@ -16,13 +16,25 @@ class GetUserDataErrorState extends HomeStates {
 
 class GetUserDataSuccessState extends HomeStates {}
 
+class ProfileImagePickedLoadingState extends HomeStates {}
+
 class ProfileImagePickedSuccessState extends HomeStates {}
 
 class ProfileImagePickedErrorState extends HomeStates {}
 
+class CoverImagePickedLoadingState extends HomeStates {}
+
 class CoverImagePickedSuccessState extends HomeStates {}
 
 class CoverImagePickedErrorState extends HomeStates {}
+
+class PostImagePickedErrorState extends HomeStates {}
+
+class PostImagePickedLoadingState extends HomeStates {}
+
+class PostImagePickedSuccessState extends HomeStates {}
+
+class PostPickedErrorState extends HomeStates {}
 
 class UpdateProfileImageSuccessState extends HomeStates {}
 
@@ -41,3 +53,11 @@ class UpdateProfileDataErrorState extends HomeStates {}
 class UpdateProfileDataLoadingState extends HomeStates {}
 
 class UpdateProfileDataSuccessState extends HomeStates {}
+
+class AddPostErrorState extends HomeStates {}
+
+class AddPostLoadingState extends HomeStates {}
+
+class AddPostSuccessState extends HomeStates {}
+
+class PostImageRemovedState extends HomeStates {}
