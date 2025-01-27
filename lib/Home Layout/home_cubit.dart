@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 // import 'package:cloud_firestore/cloud_firestore.dart';
@@ -417,5 +418,22 @@ class HomeCubit extends Cubit<HomeStates> {
       emit(AddPostErrorState());
       return null;
     }
+  }
+
+  List<PostModel> posts = [];
+  Future<void> getPosts() async {
+    emit(GetPostsLoadingState());
+    posts.clear();
+    await Supabase.instance.client.from('posts').select().then((value) {
+      // Map data to PostModel
+
+      value.forEach((post) {
+        posts.add(PostModel.fromJson(post));
+      });
+      emit(GetPostsSuccessState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(GetPostsErrorState(error));
+    });
   }
 }

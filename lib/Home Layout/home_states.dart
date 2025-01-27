@@ -61,3 +61,13 @@ class AddPostLoadingState extends HomeStates {}
 class AddPostSuccessState extends HomeStates {}
 
 class PostImageRemovedState extends HomeStates {}
+
+class GetPostsLoadingState extends HomeStates {}
+
+class GetPostsErrorState extends HomeStates {
+  final String error;
+
+  GetPostsErrorState(this.error);
+}
+
+class GetPostsSuccessState extends HomeStates {}

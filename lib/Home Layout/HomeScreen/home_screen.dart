@@ -1,65 +1,88 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_app/Home%20Layout/home_cubit.dart';
+import 'package:social_app/Home%20Layout/home_states.dart';
+import 'package:social_app/Models/post_model.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Column(
-          children: [
-            Card(
-              elevation: 5,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: const SizedBox(
-                  height: 250,
-                  child: Stack(
-                    alignment: Alignment.topLeft,
-                    children: [
-                      Image(
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        image: NetworkImage(
-                            'https://img.freepik.com/free-photo/young-girl-model-blue-sweater-pointing-away-white-gray_144627-57854.jpg?t=st=1737119518~exp=1737123118~hmac=ef8ab9c9810bd13b16aac56e18156803eab2c4c61b3c1b5e49d95e16fc1d3ff1&w=740'),
-                      ),
-                      Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                        child: Text(
-                          'Communicate with your friends',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w700,
-                          ),
+    return BlocConsumer<HomeCubit, HomeStates>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        
+        return ConditionalBuilder(
+          condition: HomeCubit.get(context).posts.isNotEmpty,
+          builder: (context) => SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Column(
+                children: [
+                  Card(
+                    elevation: 5,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: const SizedBox(
+                        height: 250,
+                        child: Stack(
+                          alignment: Alignment.topLeft,
+                          children: [
+                            Image(
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              image: NetworkImage(
+                                  'https://img.freepik.com/free-photo/young-girl-model-blue-sweater-pointing-away-white-gray_144627-57854.jpg?t=st=1737119518~exp=1737123118~hmac=ef8ab9c9810bd13b16aac56e18156803eab2c4c61b3c1b5e49d95e16fc1d3ff1&w=740'),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 2),
+                              child: Text(
+                                'Communicate with your friends',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) => buildPostItem(
+                      context,
+                      HomeCubit.get(context).posts[index],
+                    ),
+                    separatorBuilder: (context, index) => const SizedBox(
+                      height: 5,
+                    ),
+                    itemCount: HomeCubit.get(context).posts.length,
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                ],
               ),
             ),
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) => buildPostItem(context),
-              separatorBuilder: (context, index) => const SizedBox(
-                height: 5,
-              ),
-              itemCount: 10,
+          ),
+          fallback: (context) => const Center(
+            child: CircularProgressIndicator(
+              color: Colors.red,
             ),
-            const SizedBox(
-              height: 40,
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
-    Widget buildPostItem(context) => Card(
+
+  Widget buildPostItem(context, PostModel model) => Card(
         color: Colors.white,
         elevation: 5,
         child: Padding(
@@ -72,10 +95,10 @@ class HomeScreen extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const CircleAvatar(
+                  CircleAvatar(
                     radius: 25,
                     backgroundImage: NetworkImage(
-                      'https://img.freepik.com/free-photo/young-girl-model-standing-posing-white-gray_144627-58037.jpg?ga=GA1.1.79403536.1737118503&semt=ais_incoming',
+                      model.profileImage!,
                     ),
                   ),
                   const SizedBox(
@@ -84,19 +107,19 @@ class HomeScreen extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Row(
+                      Row(
                         children: [
                           Text(
-                            'Amir Khairy',
-                            style: TextStyle(
+                            model.profileName!,
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 5,
                           ),
-                          CircleAvatar(
+                          const CircleAvatar(
                             radius: 6,
                             backgroundColor: Colors.blue,
                             child: Icon(
@@ -108,7 +131,7 @@ class HomeScreen extends StatelessWidget {
                         ],
                       ),
                       Text(
-                        'January 21, 2021 at 11:00 pm',
+                        model.date!,
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -134,70 +157,71 @@ class HomeScreen extends StatelessWidget {
                 width: double.infinity,
                 color: Colors.grey[300],
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(
+              Padding(
+                padding: const EdgeInsets.symmetric(
                   vertical: 8,
                 ),
                 child: Text(
-                  'A definite article is an article that marks a definite noun phrase. Definite articles, such as the English the, are used to refer to a particular member of a group. It may be something that the speaker has already mentioned, or it may be otherwise something uniquely specified.',
-                  style: TextStyle(
+                  model.text!,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
                   ),
                 ),
               ),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsetsDirectional.only(start: 8),
-                child: Wrap(
-                  spacing: 6,
-                  children: [
-                    SizedBox(
-                      height: 20,
-                      child: MaterialButton(
-                        onPressed: () {},
-                        minWidth: 1.0,
-                        padding: EdgeInsets.zero,
-                        child: const Text(
-                          '#Software',
-                          style: TextStyle(
-                            color: Colors.blue,
-                          ),
-                        ),
+              // Container(
+              //   width: double.infinity,
+              //   padding: const EdgeInsetsDirectional.only(start: 8),
+              //   child: Wrap(
+              //     spacing: 6,
+              //     children: [
+              //       SizedBox(
+              //         height: 20,
+              //         child: MaterialButton(
+              //           onPressed: () {},
+              //           minWidth: 1.0,
+              //           padding: EdgeInsets.zero,
+              //           child: const Text(
+              //             '#Software',
+              //             style: TextStyle(
+              //               color: Colors.blue,
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //       SizedBox(
+              //         height: 20,
+              //         child: MaterialButton(
+              //           onPressed: () {},
+              //           minWidth: 1.0,
+              //           padding: EdgeInsets.zero,
+              //           child: const Text(
+              //             '#Flutter',
+              //             style: TextStyle(
+              //               color: Colors.blue,
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              if (model.postImage != '')
+                Container(
+                  height: 160,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                      5,
+                    ),
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(
+                        model.postImage!,
                       ),
                     ),
-                    SizedBox(
-                      height: 20,
-                      child: MaterialButton(
-                        onPressed: () {},
-                        minWidth: 1.0,
-                        padding: EdgeInsets.zero,
-                        child: const Text(
-                          '#Flutter',
-                          style: TextStyle(
-                            color: Colors.blue,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                height: 160,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(
-                    5,
-                  ),
-                  image: const DecorationImage(
-                    fit: BoxFit.cover,
-                    image: NetworkImage(
-                      'https://img.freepik.com/free-photo/young-girl-model-blue-sweater-pointing-away-white-gray_144627-57854.jpg?t=st=1737119518~exp=1737123118~hmac=ef8ab9c9810bd13b16aac56e18156803eab2c4c61b3c1b5e49d95e16fc1d3ff1&w=740',
-                    ),
                   ),
                 ),
-              ),
               Padding(
                 padding: const EdgeInsets.symmetric(
                   vertical: 15,
@@ -218,7 +242,7 @@ class HomeScreen extends StatelessWidget {
                               width: 5,
                             ),
                             Text(
-                              '120',
+                              '0',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400,
@@ -243,7 +267,7 @@ class HomeScreen extends StatelessWidget {
                               width: 5,
                             ),
                             Text(
-                              '120 comment',
+                              '0 comment',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400,
@@ -269,18 +293,18 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () {},
-                      child: const Row(
+                      child: Row(
                         children: [
                           CircleAvatar(
                             radius: 20,
                             backgroundImage: NetworkImage(
-                              'https://img.freepik.com/free-photo/young-girl-model-standing-posing-white-gray_144627-58037.jpg?ga=GA1.1.79403536.1737118503&semt=ais_incoming',
+                              HomeCubit.get(context).userModel!.image!,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
-                          Text(
+                          const Text(
                             'Write a comment...',
                           ),
                         ],

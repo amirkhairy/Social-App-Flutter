@@ -25,6 +25,7 @@ class HomeLayout extends StatelessWidget {
         return Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
+            surfaceTintColor: Colors.white,
             backgroundColor: Colors.white,
             title: Text(
               cubit.titles[cubit.currentIndex],
